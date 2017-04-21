@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+@model CheeseMVC.ViewModels.AddMenuItemViewModel
+
+
+@* should this be sort of here sort of in menucontroller? *@
+@{
+    ViewBag.Title = "Add Item to Menu: " + Model.Menu.Name;
+}
+
+<form asp-controller="Menu" asp-action="AddItem" method="post">
+    <div class="form-group">
+        @* cheeses is probably wrong *@
+        <label asp-for="Cheeses"></label>
+        <select asp-for="Cheeses" asp-items="Model.Cheeses"/>
+        <span asp-validation-for="Cheeses"></span>
+
+        
+        <input type="hidden" name="MenuID" value="@Model.Menu.ID"/>
+        
+        <input type="submit" value="Add Menu Item"/>
+
+
+    </div>
+</form>
+
+

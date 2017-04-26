@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CheeseMVC.Models;
@@ -9,8 +10,11 @@ namespace CheeseMVC.ViewModels
 {
     public class AddMenuItemViewModel
     {
-        public int cheeseID { get; set; }
-        public int menuID { get; set; }
+        // capitalizing c C and m M
+        [Required]
+        [Display(Name = "Cheese")]
+        public int CheeseID { get; set; }
+        public int MenuID { get; set; }
 
         public Menu Menu { get; set; }
         public List<SelectListItem> Cheeses { get; set; }

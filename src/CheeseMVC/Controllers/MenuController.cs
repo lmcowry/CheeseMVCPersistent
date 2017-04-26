@@ -42,8 +42,10 @@ namespace CheeseMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                Menu newMenu = new Menu();
-                newMenu.Name = addMenuViewModel.Name;
+                Menu newMenu = new Menu()
+                {
+                    Name = addMenuViewModel.Name
+                };
 
                 context.Menus.Add(newMenu);
                 context.SaveChanges();
@@ -58,7 +60,6 @@ namespace CheeseMVC.Controllers
         [HttpGet]
         public IActionResult ViewMenu(int id)
         {
-            Menu theMenu = context.Menus.Single(c => c.ID == id);
 
             List<CheeseMenu> items = context
                 .CheeseMenus
@@ -66,10 +67,14 @@ namespace CheeseMVC.Controllers
                 .Where(cm => cm.MenuID == id)
                 .ToList();
 
-            ViewMenuViewModel viewMenuViewModel = new ViewMenuViewModel();
+            Menu theMenu = context.Menus.Single(c => c.ID == id);
 
-            viewMenuViewModel.Menu = theMenu;
-            viewMenuViewModel.Items = items;
+
+            ViewMenuViewModel viewMenuViewModel = new ViewMenuViewModel()
+            {
+                Menu = theMenu,
+                Items = items
+            };
 
             ViewBag.Title = viewMenuViewModel.Menu.Name;
 
@@ -79,12 +84,9 @@ namespace CheeseMVC.Controllers
         [HttpGet]
         public IActionResult AddItem(int id)
         {
-            Menu theMenu = context.Menus.Single(c => c.ID == id);
-
-            // might be a problem with cheeses.tolist()
-            AddMenuItemViewModel addMenuItemForm = new AddMenuItemViewModel(theMenu, context.Cheeses.ToList());
-
-            return View(addMenuItemForm);
+            Menu theMenu = context.Menus.Single(m => m.ID == id);
+            List<Cheese> cheeses = context.Cheeses.ToList();
+            return View(new AddMenuItemViewModel(theMenu, cheeses));
 
         }
 
@@ -93,22 +95,23 @@ namespace CheeseMVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                //capitalizing CheeseID and MenuID
                 IList<CheeseMenu> existingItems = context.CheeseMenus
-                    .Where(cm => cm.CheeseID == addMenuItemViewModel.cheeseID)
-                    .Where(cm => cm.MenuID == addMenuItemViewModel.menuID).ToList();
+                    .Where(cm => cm.CheeseID == addMenuItemViewModel.CheeseID)
+                    .Where(cm => cm.MenuID == addMenuItemViewModel.MenuID).ToList();
 
-                if (existingItems.Count > 0)
+                if (existingItems.Count == 0)
                 {
                     CheeseMenu newCheeseMenu = new CheeseMenu();
-                    newCheeseMenu.MenuID = addMenuItemViewModel.menuID;
-                    newCheeseMenu.CheeseID = addMenuItemViewModel.cheeseID;
+                    newCheeseMenu.MenuID = addMenuItemViewModel.MenuID;
+                    newCheeseMenu.CheeseID = addMenuItemViewModel.CheeseID;
 
                     context.CheeseMenus.Add(newCheeseMenu);
                     context.SaveChanges();
 
 
                     // might not be MenuID
-                    return Redirect("/Menu/ViewMenu/" + newCheeseMenu.MenuID);
+                    return Redirect(string.Format("/Menu/ViewMenu/{0}", newCheeseMenu.MenuID));
 
                 }
 

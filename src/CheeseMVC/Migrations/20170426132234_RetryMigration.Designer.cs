@@ -8,8 +8,8 @@ using CheeseMVC.Data;
 namespace CheeseMVC.Migrations
 {
     [DbContext(typeof(CheeseDbContext))]
-    [Migration("20170421010423_TheRealInitialMigration")]
-    partial class TheRealInitialMigration
+    [Migration("20170426132234_RetryMigration")]
+    partial class RetryMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,11 +47,51 @@ namespace CheeseMVC.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("CheeseMVC.Models.CheeseMenu", b =>
+                {
+                    b.Property<int>("CheeseID");
+
+                    b.Property<int>("MenuID");
+
+                    b.HasKey("CheeseID", "MenuID");
+
+                    b.HasIndex("CheeseID");
+
+                    b.HasIndex("MenuID");
+
+                    b.ToTable("CheeseMenus");
+                });
+
+            modelBuilder.Entity("CheeseMVC.Models.Menu", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Menus");
+                });
+
             modelBuilder.Entity("CheeseMVC.Models.Cheese", b =>
                 {
                     b.HasOne("CheeseMVC.Models.CheeseCategory", "Category")
                         .WithMany("Cheeses")
                         .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CheeseMVC.Models.CheeseMenu", b =>
+                {
+                    b.HasOne("CheeseMVC.Models.Cheese", "Cheese")
+                        .WithMany("CheeseMenus")
+                        .HasForeignKey("CheeseID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CheeseMVC.Models.Menu", "Menu")
+                        .WithMany("CheeseMenus")
+                        .HasForeignKey("MenuID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

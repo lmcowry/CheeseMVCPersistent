@@ -10,7 +10,8 @@
     @foreach (var eachMenu in Model)
     {
         //problem should be with the asp-rout-id
-        <li><a asp-controller="Menu" asp-action="Index" asp-rout-id>@eachMenu.Name</a></li>
+        // changed asp-action from index to viewmenu
+        <li><a asp-controller="Menu" asp-action="ViewMenu" asp-route-id="@eachMenu.ID">@eachMenu.Name</a></li>
     }
 </ul>
 
